@@ -2,6 +2,7 @@ package demo.todo.adapter.out.jpa
 
 import demo.todo.adapter.out.jpa.entity.TodoJpaEntity
 import demo.todo.adapter.out.jpa.repository.TodoJpaRepository
+import demo.todo.adapter.out.jpa.vo.JpaException
 import demo.todo.application.port.out.TodoCommandRepository
 import demo.todo.domain.entity.TodoEntity
 import org.springframework.data.repository.findByIdOrNull
@@ -24,7 +25,7 @@ internal class TodoCommandJpaAdapter(
         modifier: (TodoEntity) -> TodoEntity,
     ): TodoEntity {
         val todoJpaEntity = todoJpaRepository.findByIdOrNull(id)
-            ?: throw JpaException.NotExists()
+            ?: throw JpaException.NotFound()
 
         val todoEntity = modifier.invoke(todoJpaEntity.toDomainEntity())
         todoJpaEntity.update(todoEntity)

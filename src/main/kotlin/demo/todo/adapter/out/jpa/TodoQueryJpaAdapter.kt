@@ -1,6 +1,7 @@
 package demo.todo.adapter.out.jpa
 
 import demo.todo.adapter.out.jpa.repository.TodoJpaRepository
+import demo.todo.adapter.out.jpa.vo.JpaException
 import demo.todo.application.port.out.TodoQueryRepository
 import demo.todo.application.service.model.TodoReadModel
 import org.springframework.stereotype.Component
@@ -11,7 +12,7 @@ internal class TodoQueryJpaAdapter(
 ) : TodoQueryRepository {
     override fun getById(id: String): TodoReadModel {
         val todoJpaEntity = todoJpaRepository.findByIdWithoutDelete(id)
-            ?: throw JpaException.NotExists()
+            ?: throw JpaException.NotFound()
         return todoJpaEntity.toReadModel()
     }
 

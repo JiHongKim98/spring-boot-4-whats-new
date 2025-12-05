@@ -1,9 +1,9 @@
-package demo.todo.adapter.out.jpa
+package demo.todo.adapter.out.jpa.vo
 
 import demo.todo.common.exception.BaseSuppressedException
 
 sealed class JpaException(
     message: String,
 ) : BaseSuppressedException(message, Type.INFRA) {
-    class NotExists : JpaException("Not exists")
+    class NotFound : JpaException("Not Found")
 }
