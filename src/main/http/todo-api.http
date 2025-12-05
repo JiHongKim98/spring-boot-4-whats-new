@@ -1,0 +1,48 @@
+### actuator
+GET http://localhost:8080/actuator/mappings
+
+### TODO 생성 API V1
+POST http://localhost:8080/api/todos
+X-Api-Version: v1
+X-Author-Info: jihongkim98
+Content-Type: application/json
+
+{
+  "title": "수푸링",
+  "description": "스부 4.0 에는 무슨 기능이 있나요?",
+  "author": "jihongkim98"
+}
+
+### TODO 수정 API V1
+PATCH http://localhost:8080/api/todos/6873afd9
+X-Api-Version: v1
+X-Author-Info: jihongkim98
+Content-Type: application/json
+
+{
+  "title": "수정했다요",
+  "description": "스부 4.0은 최고야",
+  "author": "jihongkim98"
+}
+
+### TODO 완료 API V1
+POST http://localhost:8080/api/todos/6873afd9/done
+X-Api-Version: v1
+X-Author-Info: jihongkim98
+Content-Type: application/json
+
+### TODO 삭제 API V1
+DELETE http://localhost:8080/api/todos/6873afd9
+X-Api-Version: v1
+X-Author-Info: jihongkim98
+Content-Type: application/json
+
+### TODO 조회 API V1
+GET http://localhost:8080/api/todos/6873afd9
+X-Api-Version: v1
+Content-Type: application/json
+
+### TODO 목록 조회 API V1
+GET http://localhost:8080/api/todos
+X-Api-Version: v1
+Content-Type: application/json
