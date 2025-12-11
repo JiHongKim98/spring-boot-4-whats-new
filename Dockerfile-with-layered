@@ -1,0 +1,44 @@
+FROM eclipse-temurin:21-jre as Builder
+
+WORKDIR /builder
+
+COPY ./build/libs/*.jar ./app.jar
+
+RUN java -Djarmode=layertools -jar app.jar extract || true
+
+RUN java \
+  -XX:ArchiveClassesAtExit=./application.jsa \
+  -Dspring.aot.enabled=true \
+  -Dspring.context.exit=onRefresh \
+  org.springframework.boot.loader.launch.JarLauncher || true
+
+
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+COPY --from=Builder /builder/dependencies/ ./
+COPY --from=Builder /builder/spring-boot-loader/ ./
+COPY --from=Builder /builder/snapshot-dependencies/ ./
+COPY --from=Builder /builder/application/ ./
+
+COPY --from=Builder /builder/application.jsa ./
+
+
+# Layered
+#ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
+
+# Layered + CDS
+#ENTRYPOINT ["java", "-XX:SharedArchiveFile=./application.jsa", "org.springframework.boot.loader.launch.JarLauncher"]
+
+# Layered + AOT
+#ENTRYPOINT ["java", "-Dspring.aot.enabled=true", "org.springframework.boot.loader.launch.JarLauncher"]
+
+# Layered + CDS + AOT
+#ENTRYPOINT ["java", "-XX:SharedArchiveFile=./application.jsa", "-Dspring.aot.enabled=true", "org.springframework.boot.loader.launch.JarLauncher"]
+
+# Layered + CDS + AOT + Tier 3 제한
+ENTRYPOINT ["java", "-XX:SharedArchiveFile=./application.jsa", "-XX:TieredStopAtLevel=3", "-Dspring.aot.enabled=true", "org.springframework.boot.loader.launch.JarLauncher"]
+
+# Layered + CDS + AOT (CDS 로깅)
+#ENTRYPOINT ["java", "-Xlog:cds", "-XX:SharedArchiveFile=./application.jsa", "-Dspring.aot.enabled=true", "org.springframework.boot.loader.launch.JarLauncher"]

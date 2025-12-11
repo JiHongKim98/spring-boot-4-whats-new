@@ -1,0 +1,28 @@
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+COPY ./build/libs/*.jar ./app.jar
+
+RUN java \
+  -XX:ArchiveClassesAtExit=./application.jsa \
+  -Dspring.aot.enabled=true \
+  -Dspring.context.exit=onRefresh \
+  -jar app.jar || true
+
+
+#ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# CDS
+#ENTRYPOINT ["java", "-XX:SharedArchiveFile=./application.jsa", "-jar", "app.jar"]
+
+# AOT
+#ENTRYPOINT ["java", "-Dspring.aot.enabled=true", "-jar", "app.jar"]
+
+# AOT + CDS
+#ENTRYPOINT ["java", "-XX:SharedArchiveFile=./application.jsa", "-Dspring.aot.enabled=true", "-jar", "app.jar"]
+
+
+
+# AOT & CDS (CDS 로깅)
+ENTRYPOINT ["java", "-Xlog:cds", "-XX:SharedArchiveFile=./application.jsa", "-Dspring.aot.enabled=true", "-jar", "app.jar"]

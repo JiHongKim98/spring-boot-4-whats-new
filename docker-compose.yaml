@@ -1,0 +1,30 @@
+services:
+  spring-boot-4:
+    build:
+      context: .
+      #dockerfile: Dockerfile-baseline
+      dockerfile: Dockerfile-with-layered
+    container_name: spring-boot-4
+    depends_on:
+      - h2
+    ports:
+      - "8080:8080"
+    cpus: "1"
+    mem_limit: 1024m
+    environment:
+      DATASOURCE_URL: jdbc:h2:tcp://h2:1521/test
+      DATASOURCE_USERNAME: sa
+      DATASOURCE_PASSWORD: ""
+
+  h2:
+    image: oscarfonts/h2:2.3.232
+    container_name: h2
+    ports:
+      - "1521:1521"
+      - "8081:81"
+    environment:
+      H2_OPTIONS: -ifNotExists
+    volumes:
+      - ./h2-data:/opt/h2-data
+    cpus: "0.5"
+    mem_limit: 512m
